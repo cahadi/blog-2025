@@ -1,13 +1,10 @@
 <?php
 namespace App\Views;
 
-
 class ArticleView
 {
-    protected $path;
-
-    public function showArticlesList(string $path, array $articles)
+    public function showArticlesList(string $path, array $articles, array $articleContents = [])
     {
-        print $this->path = include_once($path);
+        include $path;
     }
 }

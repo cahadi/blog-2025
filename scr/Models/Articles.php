@@ -7,10 +7,10 @@ class Articles
     public function __construct()
     {
         $this->articles = [
-            ['title'=>'1', 'description'=>'1', 'content'=>'1', 'author'=>'author1'],
-            ['title'=>'2', 'description'=>'2', 'content'=>'2', 'author'=>'author2'],
-            ['title'=>'3', 'description'=>'3', 'content'=>'3', 'author'=>'author3'],
-            ['title'=>'4', 'description'=>'4', 'content'=>'4', 'author'=>'author4'],
+            ['title'=>'name1', 'description'=>'description1', 'content'=>'content1', 'author'=>'author1', 'price'=>'price1'],
+            ['title'=>'name2', 'description'=>'description2', 'content'=>'content2', 'author'=>'author2', 'price'=>'price2'],
+            ['title'=>'name3', 'description'=>'description3', 'content'=>'content3', 'author'=>'author3', 'price'=>'price3'],
+            ['title'=>'name4', 'description'=>'description4', 'content'=>'content4', 'author'=>'author4', 'price'=>'price4'],
         ];
     }
     public function all()

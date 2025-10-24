@@ -21,6 +21,7 @@
                 <li class="nav-item"><a class="nav-link" href="#">О нас</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Контакты</a></li>
                 <li class="nav-item"><a class="nav-link" href="/calc">Calculator</a></li>
+                <li class="nav-item"><a class="nav-link" href="/dir">DirTest</a></li>
             </ul>
         </div>
     </div>
