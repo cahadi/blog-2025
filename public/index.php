@@ -1,43 +1,76 @@
 <?php
+declare(strict_types=1);
+
 require '../vendor/autoload.php';
 
 use App\Controllers\ArticleController;
-use App\Models\Articles;
-use App\Views\ArticleView;
+use App\Controllers\FrontController;
 use App\Core\FileManager;
+use App\Core\Helper;
+use App\Models\Articles;
+use App\Models\Category;
+use App\Models\Post;
+use App\Views\ArticleView;
+use App\Views\FrontView;
 
+// Инициализация обработки ошибок
 $whoops = new \Whoops\Run;
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
-$h =new \App\Core\Helper();
+// Конфигурация
 $config = require '../config/settings.php';
-//$h::dd($config);
 
+// Инициализация зависимостей
 $fileManager = new FileManager();
+$helper = new Helper();
 
-$article = new Articles();
+// Модели
+$articleModel = new Articles();
+$categoryModel = new Category();
+$postModel = new Post();
+
+// Представления
 $articleView = new ArticleView();
-$articleController = new ArticleController($article, $articleView, $fileManager);
+$frontView = new FrontView();
 
+// Контроллеры
+$articleController = new ArticleController($articleModel, $articleView, $fileManager);
+$frontController = new FrontController($frontView, $categoryModel, $postModel);
+
+// Создание директории страниц если не существует
 if (!is_dir('../content/pages')) {
     mkdir('../content/pages', 0777, true);
 }
 
+// Обработка маршрутов
 $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-switch ($url) {
-    case '/':
-        $articleController->showArticlesList();
+$router = [
+    '/' => fn() => $frontController->index(),
+    '/catalog' => fn() => $articleController->showArticlesList(),
+    '/category/coding' => fn() => $frontController->showPostsInCategory('coding'),
+    '/posts' => fn() => $frontController->showAllPosts(),
+    '/calc' => fn() => include_once('../resources/front/calc.php'),
+    '/dir' => fn() => $helper->dd($fileManager->listDirs('')),
+    '/files' => fn() => $helper->dd($fileManager->listFiles('')),
+];
+
+$matched = false;
+foreach ($router as $route => $handler) {
+    if ($route === $url) {
+        $handler();
+        $matched = true;
         break;
-    case '/calc':
-        echo include_once('../resources/views/calc.php');
-        break;
-    case '/dir':
-        $dirs = $fileManager->listDirs('');
-        echo '<pre>' . print_r($dirs, true) . '</pre>';
-        break;
-    default:
-        echo include_once('../resources/views/404.php');
-        break;
+    }
+}
+
+if (!$matched && str_starts_with($url, '/post/')) {
+    $slug = str_replace('/post/', '', $url);
+    $frontController->showPost($slug);
+    $matched = true;
+}
+
+if (!$matched) {
+    $frontController->page404();
 }

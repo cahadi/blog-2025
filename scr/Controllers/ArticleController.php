@@ -1,38 +1,44 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controllers;
 
+use App\Core\FileManager;
 use App\Models\Articles;
 use App\Views\ArticleView;
-use App\Core\FileManager;
 
 class ArticleController
 {
-    public Articles $article;
-    public ArticleView $articleView;
-    protected FileManager $fileManager;
+    private Articles $articleModel;
+    private ArticleView $articleView;
+    private FileManager $fileManager;
 
-    public function __construct(Articles $article, ArticleView $articleView, ?FileManager $fileManager = null)
-    {
-        $this->article = $article;
+    public function __construct(
+        Articles $articleModel,
+        ArticleView $articleView,
+        ?FileManager $fileManager = null
+    ) {
+        $this->articleModel = $articleModel;
         $this->articleView = $articleView;
         $this->fileManager = $fileManager ?? new FileManager();
     }
 
-    public function showArticlesList()
+    public function showArticlesList(): void
     {
-        $articlesFiles = $this->fileManager->listFiles('content/posts/tea', '.md');
+        $articlesFiles = $this->fileManager->listFiles('posts', '.md');
+        $articlesDir = $this->fileManager->listDirs('');
 
         $articleContents = [];
-        $filePath = '../../../content/posts/tea.md';
-        $content = $this->fileManager->read('posts/tea.md');
+        $filePath = 'posts/tea.md';
+        $content = $this->fileManager->read($filePath);
+
         if ($content !== false) {
             $articleContents[$filePath] = $content;
         }
 
-        $articles = $this->article->all();
+        $articles = $this->articleModel->all();
+        $viewPath = '../resources/front/catalog.php';
 
-        $path = '../resources/views/index.php';
-
-        $this->articleView->showArticlesList($path, $articles, $articleContents);
+        $this->articleView->showArticlesList($viewPath, $articles, $articleContents);
     }
 }
