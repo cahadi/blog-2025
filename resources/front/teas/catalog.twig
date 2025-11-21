@@ -1,0 +1,68 @@
+{% extends "layout.twig" %}
+
+{% block sidebar %}
+    {% include('/partials/sidebar_catalog.twig') %}
+{% endblock %}
+
+{% block content %}
+    <div class="catalog-page">
+        <div class="jumbotron">
+            <h1>Каталог чая</h1>
+            <p class="lead">Откройте для себя мир изысканных чаев</p>
+        </div>
+
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Поиск чая...">
+                </div>
+                <div class="col-md-6">
+                    <select class="form-select">
+                        <option>Сортировка: по популярности</option>
+                        <option>По цене (сначала дешевые)</option>
+                        <option>По цене (сначала дорогие)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100">
+                            <img src="{{ product.image }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text flex-grow-1">{{ product.description }}</p>
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="h5 mb-0 text-success">{{ product.getFormattedPrice() }}</span>
+                                        <span class="badge bg-primary">{{ product.category }}</span>
+                                    </div>
+                                    <div class="d-grid gap-2 mt-3">
+                                        <button class="btn btn-success">В корзину</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if show_pagination %}
+                <nav aria-label="Навигация по страницам">
+                    <ul class="pagination justify-content-center mt-5">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">Назад</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Вперед</a>
+                        </li>
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

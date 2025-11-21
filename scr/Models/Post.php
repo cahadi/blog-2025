@@ -3,72 +3,28 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\FileManager;
-use App\Traits\Helper;
-
 class Post
 {
-    use Helper;
+    public function __construct(
+        public int $id,
+        public string $title,
+        public string $description,
+        public string $coverImage,
+        public string $content,
+        public string $category = '',
+        public string $filename = ''
+    ) {}
 
-    private FileManager $fileManager;
-
-    public function __construct()
+    public static function fromArray(array $data): self
     {
-        $this->fileManager = new FileManager();
-    }
-
-    public function getAllPosts(?string $category = null): array
-    {
-        if ($category) {
-            return $this->fileManager->listFiles("posts/{$category}");
-        }
-
-        $posts = $this->fileManager->listFiles('posts');
-        $categories = $this->getCategories();
-
-        foreach ($categories as $category) {
-            $posts = array_merge($posts, $this->fileManager->listFiles("posts/{$category}"));
-        }
-
-        return array_unique($posts);
-    }
-
-    public function getCategories(): array
-    {
-        $dirs = $this->fileManager->listDirs('posts');
-
-        return array_map(fn($dir) => basename($dir), $dirs);
-    }
-
-    public function getPost(string $path): ?array
-    {
-        $content = $this->fileManager->read($path);
-
-        if (!$content) {
-            return null;
-        }
-
-        $parts = explode("\n---\n", $content, 2);
-        $meta = json_decode($parts[0], true) ?: [];
-
-        return [
-            'meta' => $meta,
-            'body' => $parts[1] ?? ''
-        ];
-    }
-
-    public function getPostsInCategory(string $categorySlug): array
-    {
-        $postsList = $this->getAllPosts($categorySlug);
-        $posts = [];
-
-        foreach ($postsList as $post) {
-            $postData = $this->getPost($post);
-            if ($postData) {
-                $posts[] = $postData;
-            }
-        }
-
-        return $posts;
+        return new self(
+            (int)($data['id'] ?? 0),
+            (string)($data['title'] ?? ''),
+            (string)($data['description'] ?? ''),
+            (string)($data['cover_image'] ?? ''),
+            (string)($data['content'] ?? ''),
+            (string)($data['category'] ?? ''),
+            (string)($data['filename'] ?? '')
+        );
     }
 }

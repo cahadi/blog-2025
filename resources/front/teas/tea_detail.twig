@@ -1,0 +1,52 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <img src="{{ tea.image }}" class="img-fluid rounded shadow" alt="{{ tea.name }}">
+            </div>
+            <div class="col-md-6">
+                <h1 class="display-5 mb-3">{{ tea.name }}</h1>
+
+                <div class="mb-3">
+                    {% if tea.type %}
+                        <span class="badge bg-info fs-6 me-2">{{ tea.type }}</span>
+                    {% endif %}
+
+                    {% if tea.origin %}
+                        <span class="badge bg-secondary fs-6">{{ tea.origin }}</span>
+                    {% endif %}
+                </div>
+
+                <p class="lead text-muted mb-4">{{ tea.description }}</p>
+
+                <div class="tea-details mb-4">
+                    {% if tea.brewTime %}
+                        <p class="mb-2"><strong>Время заваривания:</strong> {{ tea.brewTime }}</p>
+                    {% endif %}
+
+                    {% if tea.caffeineLevel %}
+                    <p class="mb-3"><strong>Уровень кофеина:</strong>
+                        {% for i in 1..5 %}
+                            {% if i <= tea.caffeineLevel %}
+                                <i class="bi bi-cup-fill text-warning fs-5"></i>
+                            {% else %}
+                                <i class="bi bi-cup text-muted fs-5"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+
+                <div class="price-section mb-4">
+                    <h2 class="text-success display-6">{{ tea.getFormattedPrice() }}</h2>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-success btn-lg me-3">Купить</button>
+                    <a href="/catalog" class="btn btn-outline-primary btn-lg">Назад к каталогу</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

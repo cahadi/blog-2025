@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Панель управления - Магазин чая{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="shortcut icon" href="/media/green-tea.png" type="image/x-icon"/>
+    <style>
+        .admin-sidebar {
+            background: linear-gradient(180deg, #2d5016 0%, #4a7c1f 100%);
+            min-height: calc(100vh - 76px);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .admin-nav-item {
+            color: #e8f5e8;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            display: block;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .admin-nav-item:hover, .admin-nav-item.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #a3d977;
+            color: white;
+        }
+        .admin-stats-card {
+            background: linear-gradient(135deg, #f8fff8 0%, #e8f5e8 100%);
+            border: 1px solid #c8e6c9;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+        .admin-stats-card:hover {
+            transform: translateY(-2px);
+        }
+        .table-admin {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        .table-admin th {
+            background: #4a7c1f;
+            color: white;
+            border: none;
+        }
+        .table-admin td {
+            border-color: #e8f5e8;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+{% include('/partials/navbar.twig') %}
+
+<div class="container-fluid flex-grow-1">
+    <div class="row h-100">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 admin-sidebar p-0">
+            <nav class="d-flex flex-column h-100">
+                <div class="p-3 border-bottom border-success">
+                    <h6 class="text-white mb-0"><i class="bi bi-speedometer2 me-2"></i>Панель управления</h6>
+                </div>
+
+                <div class="flex-grow-1 p-2">
+                    <a href="/admin" class="admin-nav-item {{ app.request.pathinfo == '/admin' ? 'active' : '' }}">
+                        <i class="bi bi-house me-2"></i>Дашборд
+                    </a>
+                    <a href="/admin/posts" class="admin-nav-item">
+                        <i class="bi bi-file-text me-2"></i>Статьи
+                    </a>
+                    <a href="/admin/products" class="admin-nav-item">
+                        <i class="bi bi-cup-hot me-2"></i>Товары
+                    </a>
+                    <a href="/admin/categories" class="admin-nav-item">
+                        <i class="bi bi-tags me-2"></i>Категории
+                    </a>
+                    <a href="/admin/users" class="admin-nav-item">
+                        <i class="bi bi-people me-2"></i>Пользователи
+                    </a>
+                    <a href="/admin/settings" class="admin-nav-item">
+                        <i class="bi bi-gear me-2"></i>Настройки
+                    </a>
+            </nav>
+        </div>
+
+        <div class="col-md-9 col-lg-10">
+            <main class="p-4">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+</div>
+
+{% include('/partials/footer.twig') %}
+{% include('/partials/js.twig') %}
+</body>
+</html>

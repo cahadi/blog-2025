@@ -13,6 +13,15 @@
         }
     ],
     "require": {
-        "filp/whoops": "^2.18"
+        "php": ">=8.*",
+        "ext-pdo": "*",
+        "twig/twig": "^3.22",
+        "league/route": "^6.2",
+        "league/container": "^5.1",
+        "laminas/laminas-diactoros": "^3.8",
+        "filp/whoops": "^2.18",
+        "laminas/laminas-httphandlerrunner": "^2.13",
+        "michelf/php-markdown": "^2.0",
+        "vlucas/phpdotenv": "^5.6"
     }
 }

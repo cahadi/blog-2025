@@ -3,104 +3,64 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Core\FileManager;
-use App\Models\Category;
-use App\Models\Post;
-use App\Traits\Helper;
+use App\Interfaces\PostRepositoryInterface;
+use App\Interfaces\TeaRepositoryInterface;
 use App\Views\FrontView;
+use Laminas\Diactoros\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class FrontController
 {
-    use Helper;
-
-    private FrontView $view;
-    private Category $categoryModel;
-    private Post $postModel;
-    private FileManager $fileManager;
-
     public function __construct(
-        FrontView $view,
-        Category $categoryModel,
-        Post $postModel
-    ) {
-        $this->view = $view;
-        $this->categoryModel = $categoryModel;
-        $this->postModel = $postModel;
-        $this->fileManager = new FileManager();
+        private PostRepositoryInterface $postRepository,
+        private TeaRepositoryInterface $teaRepository,
+        private FrontView $frontView
+    ) {}
+
+    public function index(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->response($this->frontView->index());
     }
 
-    public function index(): void
+    public function showCatalog(ServerRequestInterface $request): ResponseInterface
     {
-        /*
-        $content = $this->renderTemplate('home.php', [
-            'title' => 'Главная страница',
-            'description' => 'Добро пожаловать на наш сайт'
-        ]);*/
-
-        $this->view->render('home.php', [
-            'meta' => [
-                'title' => 'Главная - Мой сайт',
-                'description' => 'Добро пожаловать на наш сайт'
-            ]
-        ]);
+        $teas = $this->teaRepository->all();
+        return $this->response($this->frontView->catalog($teas));
     }
 
-    public function showPostsInCategory(string $categorySlug): void
+    public function showAllPosts(ServerRequestInterface $request): ResponseInterface
     {
-        $categories = $this->categoryModel->getCategories();
-        $posts = $this->postModel->getPostsInCategory($categorySlug);
-
-        $this->view->render('posts.php', [
-            'posts' => $posts,
-            'categories' => $categories,
-            'currentCategory' => $categorySlug
-        ]);
+        $posts = $this->postRepository->all();
+        return $this->response($this->frontView->posts($posts));
     }
 
-    public function showAllPosts(): void
+    public function showPost(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $categories = $this->categoryModel->getCategories();
-        $posts = $this->postModel->getAllPosts();
-
-        $this->view->render('posts.php', [
-            'posts' => $posts,
-            'categories' => $categories
-        ]);
-    }
-
-    public function showPost(string $postSlug): void
-    {
-        $post = $this->postModel->getPost("posts/{$postSlug}.md");
+        $post = $this->postRepository->find((int)$args['id']);
 
         if (!$post) {
-            $this->page404();
-            return;
+            return $this->response($this->frontView->error404(), 404);
         }
 
-        $content = $this->renderTemplate('post.php', [
-            'post' => $post
-        ]);
-
-        $this->view->render('layout.php', [
-            'content' => $content,
-            'meta' => [
-                'title' => $post['meta']['title'] ?? 'Пост',
-                'description' => $post['meta']['description'] ?? ''
-            ]
-        ]);
+        return $this->response($this->frontView->post($post));
     }
 
-    public function page404(): void
+    public function showTea(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        http_response_code(404);
-        $this->view->render('404.php');
+        $tea = $this->teaRepository->find((int)$args['id']);
+
+        if (!$tea) {
+            return $this->response($this->frontView->error404(), 404);
+        }
+
+        return $this->response($this->frontView->tea($tea));
     }
 
-    private function renderTemplate(string $template, array $data = []): string
+    private function response(string $content, int $status = 200): ResponseInterface
     {
-        ob_start();
-        extract($data);
-        include $this->view->getTemplatePath() . $template;
-        return ob_get_clean();
+        $response = new Response();
+        $response->getBody()->write($content);
+        return $response->withStatus($status);
     }
 }
