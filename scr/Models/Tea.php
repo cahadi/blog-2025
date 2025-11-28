@@ -12,10 +12,10 @@ class Tea
         public string $image,
         public float $price,
         public string $category = '',
-        public string $type = '', // зеленый, черный, улун и т.д.
-        public string $origin = '', // страна происхождения
-        public string $brewTime = '', // время заваривания
-        public int $caffeineLevel = 0 // уровень кофеина
+        public string $type = '',
+        public string $origin = '',
+        public string $brewTime = '',
+        public int $caffeineLevel = 0
     ) {}
 
     public static function fromArray(array $data): self

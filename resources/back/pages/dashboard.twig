@@ -31,7 +31,7 @@
                     <div class="card border-success h-100 shadow-sm">
                         <div class="card-body text-center">
                             <i class="bi bi-cup-hot fs-1 text-success"></i>
-                            <h4 class="card-title mt-3">24</h4>
+                            <h4 class="card-title mt-3">{{ teas|length }}</h4>
                             <p class="card-text text-muted">Виды чая</p>
                         </div>
                     </div>
@@ -40,72 +40,13 @@
                     <div class="card border-success h-100 shadow-sm">
                         <div class="card-body text-center">
                             <i class="bi bi-eye fs-1 text-success"></i>
-                            <h4 class="card-title mt-3">156</h4>
+                            <h4 class="card-title mt-3">0</h4>
                             <p class="card-text text-muted">Посетители сегодня</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Последние статьи -->
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-clock-history me-2"></i>Последние статьи
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Заголовок</th>
-                                <th>Категория</th>
-                                <th>Дата</th>
-                                <th>Действия</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for post in posts %}
-                                <tr>
-                                    <td><code>#{{ post.id }}</code></td>
-                                    <td>
-                                        <strong>{{ post.title }}</strong>
-                                        {% if post.description %}
-                                            <br><small class="text-muted">{{ post.description }}</small>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-success">{{ post.category }}</span>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">Сегодня</small>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="#" class="btn btn-outline-success">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a href="#" class="btn btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="5" class="text-center py-4">
-                                        <i class="bi bi-inbox fs-1 text-muted"></i>
-                                        <p class="mt-2 text-muted">Статьи не найдены</p>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     </div>

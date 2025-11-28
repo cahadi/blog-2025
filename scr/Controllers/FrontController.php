@@ -20,47 +20,59 @@ class FrontController
 
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->response($this->frontView->index());
+        $html = $this->frontView->index();
+        return $this->createResponse($html);
     }
 
     public function showCatalog(ServerRequestInterface $request): ResponseInterface
     {
         $teas = $this->teaRepository->all();
-        return $this->response($this->frontView->catalog($teas));
+        $html = $this->frontView->catalog($teas);
+        return $this->createResponse($html);
     }
 
     public function showAllPosts(ServerRequestInterface $request): ResponseInterface
     {
         $posts = $this->postRepository->all();
-        return $this->response($this->frontView->posts($posts));
+        $html = $this->frontView->posts($posts);
+        return $this->createResponse($html);
     }
 
     public function showPost(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $post = $this->postRepository->find((int)$args['id']);
+        $post = null;
+        if (isset($args['id'])) {
+            $post = $this->postRepository->find((int)$args['id']);
 
-        if (!$post) {
-            return $this->response($this->frontView->error404(), 404);
+            if (!$post) {
+                $html = $this->frontView->error404();
+                return $this->createResponse($html)->withStatus(404);
+            }
+
+            $html = $this->frontView->post($post);
+            return $this->createResponse($html);
         }
-
-        return $this->response($this->frontView->post($post));
     }
-
     public function showTea(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        $tea = $this->teaRepository->find((int)$args['id']);
+        $tea = null;
+        if (isset($args['id'])) {
+            $tea = $this->teaRepository->find((int)$args['id']);
 
-        if (!$tea) {
-            return $this->response($this->frontView->error404(), 404);
+            if (!$tea) {
+                $html = $this->frontView->error404();
+                return $this->createResponse($html)->withStatus(404);
+            }
+
+            $html = $this->frontView->tea($tea);
+            return $this->createResponse($html);
         }
-
-        return $this->response($this->frontView->tea($tea));
     }
 
-    private function response(string $content, int $status = 200): ResponseInterface
+    private function createResponse(string $content): ResponseInterface
     {
         $response = new Response();
         $response->getBody()->write($content);
-        return $response->withStatus($status);
+        return $response;
     }
 }

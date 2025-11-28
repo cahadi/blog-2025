@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Interfaces\UserRepositoryInterface;
 use App\Views\AuthView;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -9,13 +11,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class AuthController
 {
-
-    private AuthView $authView;
-
-    public function __construct(AuthView $authView)
-    {
-        $this->authView = $authView;
-    }
+    public function __construct(
+        private AuthView $authView,
+        private UserRepositoryInterface $userRepository
+    ) {}
 
     public function showLoginForm(ServerRequestInterface $request): ResponseInterface
     {
@@ -51,7 +50,7 @@ class AuthController
     private function authenticate(string $username, string $password): bool
     {
         $validUsers = [
-            'admin' => 'admin',
+            'admin' => 'admin123',
             'editor' => 'editor123'
         ];
 

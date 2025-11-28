@@ -8,14 +8,10 @@ use App\Models\Post;
 
 class JsonPostRepository implements PostRepositoryInterface
 {
-    private string $file;
-    private PostFactoryInterface $factory;
-
-    public function __construct(PostFactoryInterface $factory, string $file = ROOT_PATH . '/storage/posts.json')
-    {
-        $this->factory = $factory;
-        $this->file = $file;
-    }
+    public function __construct(
+        private PostFactoryInterface $factory,
+        private string $file = ROOT_PATH . '/storage/posts.json'
+    ) {}
 
     public function all(): array
     {
@@ -25,6 +21,10 @@ class JsonPostRepository implements PostRepositoryInterface
 
     private function read(): array
     {
+        if (!file_exists($this->file)) {
+            return [];
+        }
+
         $data = file_get_contents($this->file);
         return json_decode($data, true) ?: [];
     }
@@ -43,11 +43,21 @@ class JsonPostRepository implements PostRepositoryInterface
     public function create(array $data): Post
     {
         $posts = $this->read();
-        $id = max(array_column($posts, 'id')) + 1;
-        $newPost = ['id' => $id] + $data;
+        $id = empty($posts) ? 1 : max(array_column($posts, 'id')) + 1;
+
+        $newPost = [
+            'id' => $id,
+            'title' => $data['title'] ?? '',
+            'description' => $data['description'] ?? '',
+            'cover_image' => $data['cover_image'] ?? '',
+            'content' => $data['content'] ?? '',
+            'category' => $data['category'] ?? '',
+            'tags' => $data['tags'] ?? [],
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
         $posts[] = $newPost;
         $this->write($posts);
-        $newPost['filename'] = 'post_' . $id;
         return $this->factory->create($newPost);
     }
 
@@ -61,9 +71,13 @@ class JsonPostRepository implements PostRepositoryInterface
         $posts = $this->read();
         foreach ($posts as &$post) {
             if ($post['id'] === $id) {
-                $post = ['id' => $id] + $data;
+                $post['title'] = $data['title'] ?? $post['title'];
+                $post['description'] = $data['description'] ?? $post['description'];
+                $post['cover_image'] = $data['cover_image'] ?? $post['cover_image'];
+                $post['content'] = $data['content'] ?? $post['content'];
+                $post['category'] = $data['category'] ?? $post['category'];
+                $post['tags'] = $data['tags'] ?? $post['tags'] ?? [];
                 $this->write($posts);
-                $post['filename'] = 'post_' . $id;
                 return $this->factory->create($post);
             }
         }

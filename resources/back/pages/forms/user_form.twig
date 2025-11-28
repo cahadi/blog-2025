@@ -1,0 +1,84 @@
+{% extends "layout.twig" %}
+
+{% block title %}{% if isEdit %}Редактирование пользователя{% else %}Добавление пользователя{% endif %}{% endblock %}
+
+{% block sidebar %}
+    {% include('/partials/sidebar_admin.twig') %}
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            {% if isEdit %}Редактирование пользователя{% else %}Добавление нового пользователя{% endif %}
+        </h1>
+        <a href="/admin/users" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Назад к списку
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-person me-2"></i>
+                {% if isEdit %}Редактирование пользователя{% else %}Создание нового пользователя{% endif %}
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="/admin/user/save">
+                {% if isEdit %}
+                    <input type="hidden" name="id" value="{{ user.id }}">
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Имя пользователя</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="username"
+                                   name="username"
+                                   value="{{ user.username }}"
+                                   required>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email"
+                                       class="form-control"
+                                       id="email"
+                                       name="email"
+                                       value="{{ user.email }}"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">
+                                        {% if isEdit %}Новый пароль (оставьте пустым, если не меняется)</label>
+                                    <input type="password"
+                                           class="form-control"
+                                           id="password"
+                                           name="password"
+                                           {% if not isEdit %}required{% endif %}>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Роль</label>
+                                    <select class="form-control" id="role" name="role">
+                                        <option value="user" {% if user.role == 'user' %}selected{% endif %}>Пользователь</option>
+                                        <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Администратор</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 py-2">
+                                <i class="bi bi-save me-2"></i>
+                                {% if isEdit %}Сохранить изменения{% else %}Создать пользователя{% endif %}
+                            </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

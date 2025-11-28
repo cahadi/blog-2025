@@ -1,0 +1,90 @@
+{% extends "layout.twig" %}
+
+{% block title %}{% if isEdit %}Редактирование статьи{% else %}Добавление статьи{% endif %}{% endblock %}
+
+{% block sidebar %}
+    {% include('/partials/sidebar_admin.twig') %}
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            {% if isEdit %}Редактирование статьи{% else %}Добавление новой статьи{% endif %}
+        </h1>
+        <a href="/admin/posts" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Назад к списку
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-journal-text me-2"></i>
+                {% if isEdit %}Редактирование статьи{% else %}Создание новой статьи{% endif %}
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="/admin/post/save">
+                {% if isEdit %}
+                    <input type="hidden" name="id" value="{{ post.id }}">
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Заголовок статьи</label>
+                    <input type="text"
+                           class="form-control"
+                           id="title"
+                           name="title"
+                           value="{{ post.title }}"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Краткое описание</label>
+                    <textarea class="form-control"
+                              id="description"
+                              name="description"
+                              rows="3">{{ post.description }}</textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Категория</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="category"
+                                   name="category"
+                                   value="{{ post.category }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="cover_image" class="form-label">Обложка</label>
+                            <select class="form-control" id="cover_image" name="cover_image">
+                                <option value="">Выберите изображение</option>
+                                <option value="/media/posts/post1.jpg" {% if post.coverImage == '/media/posts/post1.jpg' %}selected{% endif %}>Пост 1</option>
+                                <option value="/media/posts/post2.jpg" {% if post.coverImage == '/media/posts/post2.jpg' %}selected{% endif %}>Пост 2</option>
+                                <option value="/media/posts/post3.jpg" {% if post.coverImage == '/media/posts/post3.jpg' %}selected{% endif %}>Пост 3</option>
+                                <option value="/media/posts/default.jpg" {% if post.coverImage == '/media/posts/default.jpg' %}selected{% endif %}>По умолчанию</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">Содержание статьи</label>
+                    <textarea class="form-control"
+                              id="content"
+                              name="content"
+                              rows="10">{{ post.content }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-2">
+                    <i class="bi bi-save me-2"></i>
+                    {% if isEdit %}Сохранить изменения{% else %}Создать статью{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

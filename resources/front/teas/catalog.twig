@@ -1,48 +1,88 @@
 {% extends "layout.twig" %}
 
 {% block sidebar %}
-    {% include('/partials/sidebar_catalog.twig') %}
+    {% include '/partials/sidebar_catalog.twig' %}
 {% endblock %}
 
 {% block content %}
     <div class="catalog-page">
-        <div class="jumbotron">
-            <h1>Каталог чая</h1>
-            <p class="lead">Откройте для себя мир изысканных чаев</p>
+        <div class="page-header">
+            <h1 class="page-title">Каталог чая</h1>
+            <p class="page-subtitle">Откройте для себя мир изысканных чаев</p>
         </div>
 
         <div class="container">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Поиск чая...">
-                </div>
-                <div class="col-md-6">
-                    <select class="form-select">
-                        <option>Сортировка: по популярности</option>
-                        <option>По цене (сначала дешевые)</option>
-                        <option>По цене (сначала дорогие)</option>
-                    </select>
+            <div class="catalog-controls">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-6">
+                        <div class="search-container">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text"
+                                   class="search-input"
+                                   placeholder="Поиск чая по названию..."
+                                   style="text-decoration: none;">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="sort-container">
+                            <select class="sort-select" style="text-decoration: none;">
+                                <option>Сортировка: по популярности</option>
+                                <option>По цене (сначала дешевые)</option>
+                                <option>По цене (сначала дорогие)</option>
+                                <option>По алфавиту (А-Я)</option>
+                                <option>По алфавиту (Я-А)</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="products-grid">
                 {% for product in products %}
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card h-100">
-                            <img src="{{ product.image }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">{{ product.name }}</h5>
-                                <p class="card-text flex-grow-1">{{ product.description }}</p>
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="h5 mb-0 text-success">{{ product.getFormattedPrice() }}</span>
-                                        <span class="badge bg-primary">{{ product.category }}</span>
-                                    </div>
-                                    <div class="d-grid gap-2 mt-3">
-                                        <button class="btn btn-success">В корзину</button>
-                                    </div>
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            {% if product.image %}
+                                <img src="{{ product.image }}" class="product-image" alt="{{ product.name }}" style="text-decoration: none;">
+                                <div class="product-overlay"></div>
+                            {% else %}
+                                <div class="product-image-placeholder">
+                                    <i class="bi bi-cup-hot"></i>
                                 </div>
+                            {% endif %}
+
+                            <div class="product-badges">
+                                {% if product.category %}
+                                    <span class="category-badge">{{ product.category }}</span>
+                                {% endif %}
+                                {% if product.isNew %}
+                                    <span class="new-badge">Новинка</span>
+                                {% endif %}
                             </div>
+                        </div>
+
+                        <div class="product-card-body">
+                            <h3 class="product-title"><a href="/tea/{{ product.id }}" style="text-decoration: none; color: inherit;">{{ product.name }}</a></h3>
+
+                            <p class="product-description">{{ product.description }}</p>
+
+                            <div class="product-card-footer">
+                                <div class="product-price">
+                                    <span class="price-value">{{ product.getFormattedPrice() }}</span>
+                                </div>
+
+                                <button class="add-to-cart-btn" style="text-decoration: none;">
+                                    <i class="bi bi-cart-plus"></i>
+                                    В корзину
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="no-products-message">
+                        <div class="empty-state">
+                            <i class="bi bi-cup"></i>
+                            <h4>Чаи не найдены</h4>
+                            <p>Попробуйте изменить параметры поиска</p>
                         </div>
                     </div>
                 {% endfor %}
@@ -52,13 +92,19 @@
                 <nav aria-label="Навигация по страницам">
                     <ul class="pagination justify-content-center mt-5">
                         <li class="page-item disabled">
-                            <a class="page-link" href="#">Назад</a>
+                            <a class="page-link" href="#" style="text-decoration: none;">
+                                <i class="bi bi-chevron-left"></i>
+                                Назад
+                            </a>
                         </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item active"><a class="page-link" href="#" style="text-decoration: none;">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#" style="text-decoration: none;">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#" style="text-decoration: none;">3</a></li>
                         <li class="page-item">
-                            <a class="page-link" href="#">Вперед</a>
+                            <a class="page-link" href="#" style="text-decoration: none;">
+                                Вперед
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
                         </li>
                     </ul>
                 </nav>

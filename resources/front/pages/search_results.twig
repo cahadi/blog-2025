@@ -1,0 +1,51 @@
+{% extends "front/layouts/default.twig" %}
+
+{% block content %}
+    <div class="search-results">
+        <h1>Результаты поиска: "{{ query }}"</h1>
+
+        {% if results.posts is defined and results.posts is not empty %}
+            <section class="posts-results">
+                <h2>Статьи</h2>
+                <div class="row">
+                    {% for post in results.posts %}
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3>{{ post.title }}</h3>
+                                    <p>{{ post.description }}</p>
+                                    <a href="/post/{{ post.id }}" class="btn btn-primary">Читать</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        {% if results.teas is defined and results.teas is not empty %}
+            <section class="teas-results">
+                <h2>Чаи</h2>
+                <div class="row">
+                    {% for tea in results.teas %}
+                        <div class="col-md-4">
+                            <div class="card tea-card">
+                                <img src="{{ tea.image }}" class="card-img-top" alt="{{ tea.name }}">
+                                <div class="card-body">
+                                    <h3>{{ tea.name }}</h3>
+                                    <p>{{ tea.description }}</p>
+                                    <p class="price">{{ tea.getFormattedPrice() }}</p>
+                                    <a href="/tea/{{ tea.id }}" class="btn btn-outline-primary">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        {% if results is empty %}
+            <p>По вашему запросу ничего не найдено.</p>
+        {% endif %}
+    </div>
+{% endblock %}

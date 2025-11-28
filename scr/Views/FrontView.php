@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Views;
 
@@ -37,12 +36,15 @@ class FrontView
 
     public function post(object $post): string
     {
-        return $this->twig->render('/front/posts/post_content.twig', ['post' => $post]);
+        return $this->twig->render('/front/posts/post_content.twig', [
+            'post' => $post,
+            'tags' => $post->tags ?? []
+        ]);
     }
 
     public function tea(object $tea): string
     {
-        return $this->twig->render('/front/teastea_detail.twig', ['tea' => $tea]);
+        return $this->twig->render('/front/teas/tea_detail.twig', ['tea' => $tea]);
     }
 
     public function error404(): string

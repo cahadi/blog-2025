@@ -11,8 +11,8 @@ class JsonTeaRepository implements TeaRepositoryInterface
 {
     public function __construct(
         private TeaFactoryInterface $factory,
-        private string $file = ROOT_PATH . '/storage/teas.json'
-    ) {}
+        private string $file = ROOT_PATH . '/storage/teas.json')
+    {}
 
     public function all(): array
     {

@@ -1,50 +1,97 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <img src="{{ tea.image }}" class="img-fluid rounded shadow" alt="{{ tea.name }}">
+    <div class="tea-detail-page">
+    <div class="container">
+        <div class="tea-detail-grid">
+            <div class="tea-image-section">
+                <div class="tea-image-container">
+                    {% if tea.image %}
+                    <img src="{{ tea.image }}" class="tea-detail-image" alt="{{ tea.name }}">
+                    <div class="tea-image-overlay"></div>
+                    {% endif %}
+                </div>
             </div>
-            <div class="col-md-6">
-                <h1 class="display-5 mb-3">{{ tea.name }}</h1>
 
-                <div class="mb-3">
+            <div class="tea-info-section">
+                <div class="tea-breadcrumb">
+                    <a href="/catalog" class="breadcrumb-link">
+                        <i class="bi bi-arrow-left"></i>
+                        Назад к каталогу
+                    </a>
+                </div>
+
+                <h1 class="tea-detail-title">{{ tea.name }}</h1>
+
+                <div class="tea-badges-row">
                     {% if tea.type %}
-                        <span class="badge bg-info fs-6 me-2">{{ tea.type }}</span>
+                        <span class="tea-type-badge">{{ tea.type }}</span>
                     {% endif %}
 
                     {% if tea.origin %}
-                        <span class="badge bg-secondary fs-6">{{ tea.origin }}</span>
+                        <span class="tea-origin-badge">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ tea.origin }}
+                            </span>
+                    {% endif %}
+
+                    {% if tea.isNew %}
+                        <span class="new-product-badge">Новинка</span>
                     {% endif %}
                 </div>
 
-                <p class="lead text-muted mb-4">{{ tea.description }}</p>
+                <p class="tea-detail-description">{{ tea.description }}</p>
 
-                <div class="tea-details mb-4">
+                <div class="tea-characteristics">
                     {% if tea.brewTime %}
-                        <p class="mb-2"><strong>Время заваривания:</strong> {{ tea.brewTime }}</p>
+                        <div class="characteristic-item">
+                            <i class="bi bi-clock"></i>
+                            <div class="characteristic-content">
+                                <span class="characteristic-label">Время заваривания</span>
+                                <span class="characteristic-value">{{ tea.brewTime }}</span>
+                            </div>
+                        </div>
                     {% endif %}
+
+                    {% if tea.temperature %}
+                    <div class="characteristic-item">
+                        <i class="bi bi-thermometer"></i>
+                        <div class="characteristic-content">
+                            <span class="characteristic-label">Температура воды</span>
+                            <span class="characteristic-value">{{ tea.temperature }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
 
                     {% if tea.caffeineLevel %}
-                    <p class="mb-3"><strong>Уровень кофеина:</strong>
-                        {% for i in 1..5 %}
-                            {% if i <= tea.caffeineLevel %}
-                                <i class="bi bi-cup-fill text-warning fs-5"></i>
-                            {% else %}
-                                <i class="bi bi-cup text-muted fs-5"></i>
-                            {% endif %}
-                        {% endfor %}
-                    </p>
-                </div>
+                        <div class="caffeine-indicator">
+                            <span class="caffeine-label">Уровень кофеина</span>
+                            <div class="caffeine-dots">
+                                {% for i in 1..5 %}
+                                    <span class="caffeine-dot {% if i <= tea.caffeineLevel %}active{% endif %}"></span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
 
-                <div class="price-section mb-4">
-                    <h2 class="text-success display-6">{{ tea.getFormattedPrice() }}</h2>
-                </div>
+                    <div class="tea-price-action">
+                        <div class="price-display">
+                            <span class="price-label">Цена:</span>
+                            <span class="tea-detail-price">{{ tea.getFormattedPrice() }}</span>
+                        </div>
 
-                <div class="action-buttons">
-                    <button class="btn btn-success btn-lg me-3">Купить</button>
-                    <a href="/catalog" class="btn btn-outline-primary btn-lg">Назад к каталогу</a>
+                        <div class="action-buttons-row">
+                            <button class="buy-now-btn">
+                                <i class="bi bi-bag-check"></i>
+                                Купить
+                            </button>
+
+                            <button class="add-to-cart-detail-btn">
+                                <i class="bi bi-cart-plus"></i>
+                                В корзину
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
